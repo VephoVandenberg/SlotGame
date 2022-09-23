@@ -14,7 +14,9 @@ namespace gameModule
 	static Shader& getShader(const char *shaderName);
 	
 	ResourceManager() = delete;
+	ResourceManager(const ResourceManager& manager) = delete;
 	~ResourceManager() = delete;
+	ResourceManager& operator=(const ResourceManager& manager) = delete;
 
     private:
 	static std::map<std::string, Shader> shaders;
