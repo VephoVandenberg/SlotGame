@@ -7,6 +7,7 @@
 #include "Window.h"
 #include "Button.h"
 #include "Renderer.h"
+#include "Events.h"
 
 namespace gameModule
 {
@@ -17,6 +18,7 @@ namespace gameModule
 	~Application() = default;
 
 	void run();
+	void onEvent(Event& event);
 
 	Application() = delete;
 	Application(const Application& app) = delete;
@@ -36,10 +38,10 @@ namespace gameModule
 	    Right
 	};
 
-	std::array<Block, 4> m_borders;                
-	
-	bool m_isRunning = true;
-	
+	std::array<Block, 4> m_borders;
+
+	bool m_isRunning = false;
+		
     private:
 	void init(WindowData& data);
 	void setBorders();

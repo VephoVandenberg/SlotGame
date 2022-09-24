@@ -1,6 +1,9 @@
 #pragma once
 
 #include <GLFW/glfw3.h>
+#include <functional>
+
+#include "Events.h"
 
 namespace gameModule
 {
@@ -8,6 +11,9 @@ namespace gameModule
     {
 	const char *title;
 	unsigned int width, height;
+
+	using EventCallbackFn = std::function<void(Event&)>;
+        EventCallbackFn func;
     };
     
     class Window
@@ -19,15 +25,12 @@ namespace gameModule
 	void update();
 	void clear();
 	
-	void setMouseButtonCallback();
-	void setMouseMoveCallback();
-	void setWindowCloseCallback();
-	
 	inline unsigned int getWidth() const { return m_data.width; }
 	inline unsigned int getHeight() const { return m_data.height; } 
 
 	Window() = delete;
 	Window& operator=(const Window& window) = delete;
+	
     private:
 	GLFWwindow *m_window = nullptr;
 	WindowData m_data;

@@ -1,13 +1,22 @@
 #include <glm/gtc/matrix_transform.hpp>
 
+#include <functional>
+#include <iostream>
+
 #include "ResourceManager.h"
 #include "Application.h"
 
 using namespace gameModule;
 
-Application::Application(const char *title, unsigned int width, unsigned int height)
+Application::Application(const char *title, unsigned int width, unsigned int height) :
+    m_isRunning(true)
 {
-    WindowData data = {title, width, height};
+    WindowData data;
+    data.title = title;
+    data.width = width;
+    data.height = height;
+    data.func = std::bind(&Application::onEvent, this, std::placeholders::_1);
+    
     init(data);
 }
 
@@ -18,12 +27,37 @@ void Application::init(WindowData& data)
 
     setBorders();
     setButtons();
+
     
     glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(m_window->getWidth()), static_cast<float>(m_window->getHeight()), 0.0f, -1.0f, 1.0f);
 
     ResourceManager::loadShader("shaders/generalShader.vert", "shaders/generalShader.frag", "general");
     ResourceManager::getShader("general").use();
     ResourceManager::getShader("general").setUniform4m("projection", projection);
+}
+
+void Application::onEvent(Event& event)
+{
+    switch(event.getType())
+    {
+    case EventType::ButtonClicked:
+    {
+	std::cout << "Clicked" << std::endl;
+	break;
+    }
+    case EventType::CursorMoved:
+    {
+	;
+        m_startButton->checkCursorButtonCollide(dynamic_cast<CursorMovedEvent&>(event).position);
+	m_stopButton->checkCursorButtonCollide(dynamic_cast<CursorMovedEvent&>(event).position);
+	break;
+    }
+    case EventType::WindowClosed:
+    {
+	m_isRunning = false;
+	break;
+    }
+    }
 }
 
 void Application::run()

@@ -2,6 +2,7 @@
 #include <stdlib.h>
 
 #include "Window.h"
+#include "Events.h"
 
 using namespace gameModule;
 
@@ -29,9 +30,11 @@ void Window::init()
 	}
 	s_GLFWInitialized = true;
     }
+    
     m_window = glfwCreateWindow(m_data.width, m_data.height, m_data.title, nullptr, nullptr);
     glfwMakeContextCurrent(m_window);
-
+    glfwSetWindowUserPointer(m_window, &m_data);
+    
     if (!s_GLEWInitialized)
     {
 	if (glewInit() != GLEW_OK)
@@ -40,6 +43,45 @@ void Window::init()
 	}
 	s_GLEWInitialized = true;
     }
+
+    glfwSetWindowCloseCallback(m_window, [](GLFWwindow *window)
+					     {
+						 auto data = *(WindowData*)glfwGetWindowUserPointer(window);
+
+						 WindowClosedEvent event;
+
+						 data.func(event);
+					     });
+
+    glfwSetCursorPosCallback(m_window, [](GLFWwindow *window, double xPos, double yPos)
+					   {
+					       auto data = *(WindowData*)glfwGetWindowUserPointer(window);
+
+					       CursorMovedEvent event;
+					       event.position.x = xPos;
+					       event.position.y = yPos;
+					       
+					       data.func(event);
+					   });
+
+    glfwSetMouseButtonCallback(m_window, [](GLFWwindow *window, int button, int action, int mods)
+					     {
+						 auto data = *(WindowData*)glfwGetWindowUserPointer(window);
+						 MouseButtonClickedEvent event;
+						 event.button = button;
+						 event.action = action;
+						 event.mods = mods;
+
+						 switch(event.action)
+						 {
+						 case GLFW_PRESS:
+						 {
+						     data.func(event);
+						     break;
+						 }
+						 }
+						 
+					     });
 }
 
 void Window::clear()
@@ -54,17 +96,3 @@ void Window::update()
     glfwSwapBuffers(m_window);
 }
 
-void Window::setMouseButtonCallback()
-{
-    
-}
-
-void Window::setMouseMoveCallback()
-{
-
-}
-
-void Window::setWindowCloseCallback()
-{
-
-}
