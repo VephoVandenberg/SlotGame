@@ -2,8 +2,8 @@
 
 using namespace gameModule;
 
-Button::Button(glm::vec2 position, glm::vec2 size, glm::vec3 color) :
-    Block(position, size, color), m_isClicked(false)
+Button::Button(glm::vec2 position, glm::vec2 size, glm::vec3 color, Texture texture) :
+    Block(position, size, color, texture), m_isClicked(false)
 {
     
 }
@@ -19,12 +19,15 @@ void Button::checkCursorButtonCollide(const glm::vec2& position)
 
 void Button::changeColorIfTarget()
 {
+    double blue;
     if (m_isTarget)
     {
-	m_color.z = 0.3f;
+        blue = 0.4f;
     }
     else
     {
-	m_color.z = 0.0f;
+        blue = 0.0f;
     }
+    // r g b
+    changeColor(glm::vec3(m_color.x, m_color.y, blue));
 }

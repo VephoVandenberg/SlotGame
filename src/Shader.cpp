@@ -7,8 +7,10 @@
 #include <string>
 
 #include "Shader.h"
+#include "ErrorHandler.h"
 
 using namespace gameModule;
+
 
 Shader::Shader(const char *vPath, const char *fPath)
 {
@@ -81,18 +83,18 @@ void Shader::use()
 
 void Shader::setUniform1i(const char *uniform, int value)
 {
-    glUniform1f(glGetUniformLocation(ID, uniform), value);
-    glUseProgram(ID);
+    use();
+    glUniform1i(glGetUniformLocation(ID, uniform), (int)value);
 }
 
 void Shader::setUniform4m(const char *uniform, glm::mat4 matrix)
 {
+    use();
     glUniformMatrix4fv(glGetUniformLocation(ID, uniform), 1, false, glm::value_ptr(matrix));
-    glUseProgram(ID);
 }
 
 void Shader::setUniform3v(const char *uniform, glm::vec3 vector)
 {
+    use();
     glUniform3f(glGetUniformLocation(ID, uniform), vector.x, vector.y, vector.z);
-    glUseProgram(ID);
 }

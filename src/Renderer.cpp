@@ -10,7 +10,7 @@ Renderer::Renderer()
     init();
 }
 
-void Renderer::draw(Shader& shader, glm::vec2 size, glm::vec2 pos, glm::vec3 color)
+void Renderer::draw(Shader& shader, Texture& texture, glm::vec2 size, glm::vec2 pos, glm::vec3 color)
 {
     shader.use();
 
@@ -20,6 +20,9 @@ void Renderer::draw(Shader& shader, glm::vec2 size, glm::vec2 pos, glm::vec3 col
 
     shader.setUniform4m("model", model);
     shader.setUniform3v("color", color);
+    shader.setUniform1i("hasTexture", texture.getStatus());
+    
+    texture.bind();
 
     glBindVertexArray(m_quadVAO);
     glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -29,13 +32,13 @@ void Renderer::draw(Shader& shader, glm::vec2 size, glm::vec2 pos, glm::vec3 col
 void Renderer::init()
 {
     float verticies[] = {
-	0.0f, 0.0f,
-	1.0f, 0.0f,
-	0.0f, 1.0f,
+	0.0f, 0.0f, 0.0f, 0.0f,
+	1.0f, 0.0f, 1.0f, 0.0f,
+	0.0f, 1.0f, 0.0f, 1.0f,
 
-	0.0f, 1.0f,
-	1.0f, 0.0f,
-	1.0f, 1.0f
+	0.0f, 1.0f, 0.0f, 1.0f,
+	1.0f, 0.0f, 1.0f, 0.0f,
+	1.0f, 1.0f, 1.0f, 1.0f,
     };
 
     unsigned int VBO;
@@ -47,8 +50,11 @@ void Renderer::init()
 
     glBufferData(GL_ARRAY_BUFFER, sizeof(verticies), verticies, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
+
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+    glEnableVertexAttribArray(1);
 
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);

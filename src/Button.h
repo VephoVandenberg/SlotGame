@@ -12,11 +12,12 @@ namespace gameModule
 	Button() = default;
 	~Button() = default;
 	
-	Button(glm::vec2 position, glm::vec2 size, glm::vec3 color = glm::vec3(0.0f, 0.0f, 0.0f));
+	Button(glm::vec2 position, glm::vec2 size, glm::vec3 color = glm::vec3(0.0f, 0.0f, 0.0f), Texture texture = Texture());
 
 	void checkCursorButtonCollide(const glm::vec2& position);
 	
-	inline bool check() const { return m_isClicked; } 
+	inline bool check() const { return m_isClicked; }
+	inline bool checkIfTarget() const { return m_isTarget; }
 
 	Button& operator=(const Button& button) = delete;
 	
