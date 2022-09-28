@@ -187,7 +187,7 @@ void Application::setScore()
 
     for (unsigned int number = 0; number < m_score.size(); number++)
     {
-	m_score[number] = Block(numberCoords, numberSize, color, ResourceManager::getTexture("2"));
+	m_score[number] = Block(numberCoords, numberSize, color, ResourceManager::getTexture("0"));
 	numberCoords.x += numberSize.x;
     }
 }
