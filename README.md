@@ -10,6 +10,7 @@ In order to build it on Linux system you will have to install following dependen
 sudo apt-get update
 sudo apt-get install cmake pkg-config
 sudo apt-get install mesa-utils libglu1-mesa-dev freeglut3-dev mesa-common-dev
+
 sudo apt-get install libglfw3
 sudo apt-get install libglfw3-dev
 sudo apt-get install libglew-dev
