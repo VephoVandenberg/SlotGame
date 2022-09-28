@@ -203,11 +203,8 @@ void Application::updateScore()
 	
 	unsigned int stringInd = 0;
 	
-	std::cout << m_scoreNumber << std::endl;
-	std::cout << scoreString << std::endl;
-	for (unsigned int index = m_score.size() - 1; index > scoreString.length(); index--)
+	for (unsigned int index = m_score.size() - 1; index >= m_score.size() - scoreString.length(); index--)
 	{
-	    
 	    m_score[index] = Block(m_score[index].getPosition(), numberSize, m_score[index].getColor(),
 				   ResourceManager::getTexture(std::string(1, scoreString[stringInd]).c_str()));
 	    stringInd++;
