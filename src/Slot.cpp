@@ -9,9 +9,14 @@ Slot::Slot(SlotType type, glm::vec2 position, glm::vec2 size,  Texture& texture,
     changeType(type);
 }
 
-bool Slot::operator==(Slot& slot) const
+bool Slot::operator==(const Slot& slot) const
 {
     return m_type == slot.m_type;
+}
+
+bool Slot::operator!=(const Slot& slot) const
+{
+    return m_type != slot.m_type;
 }
 
 void Slot::changeType(SlotType type)

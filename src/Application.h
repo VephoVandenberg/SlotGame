@@ -12,8 +12,10 @@
 #include "Slot.h"
 #include "Renderer.h"
 #include "Events.h"
-#include "../src/states/IdleState.h"
-#include "../src/states/ActiveState.h"
+
+#include "states/IdleState.h"
+#include "states/ActiveState.h"
+#include "states/ScoreState.h"
 
 namespace gameModule
 {
@@ -32,6 +34,8 @@ namespace gameModule
 
     private:
 	const unsigned int m_slotsInDrum = 6;
+	unsigned int m_scoreNumber = 0;
+	
 	enum BorderDirs
 	{
 	    Up,
@@ -49,6 +53,8 @@ namespace gameModule
 	std::array<std::deque<Slot>, 4> m_slots;
 	std::array<Block, 4> m_borders;
 
+	std::array<Block, 5> m_score;
+
 	std::unordered_map<SlotType, std::string> m_slotTypeHolder;
 
 	bool m_isRunning = false;
@@ -58,6 +64,8 @@ namespace gameModule
 	void setBorders();
 	void setButtons();
 	void setSlots();
+	void setScore();
+	void updateScore();
 	void render();
     };
 }

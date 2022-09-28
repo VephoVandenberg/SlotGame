@@ -17,3 +17,8 @@ void Block::changeColor(glm::vec3 changeColor)
 {
     m_color = changeColor;
 }
+
+void Block::changePosition(glm::vec2 pos)
+{
+    m_position = pos;
+}

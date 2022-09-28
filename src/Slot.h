@@ -20,6 +20,7 @@ namespace gameModule
     class Slot : public Block
     {
 	friend class ActiveState;
+	friend class ScoreState;
     public:
 	Slot() = default;
 	~Slot() = default;
@@ -30,10 +31,11 @@ namespace gameModule
 
 	void changeType(SlotType type);
 
-	inline SlotType getType() const { return m_type; } 
+	inline SlotType getType() const { return m_type; }
+	inline unsigned int getWorth() const { return m_worth; } 
 	
-	bool operator==(Slot& slot) const;
-	
+	bool operator==(const Slot& slot) const;
+	bool operator!=(const Slot& slot) const;
     private:
 	SlotType m_type;
 	unsigned int m_worth;

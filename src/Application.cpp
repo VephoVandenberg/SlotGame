@@ -45,10 +45,23 @@ void Application::init(WindowData& data)
     ResourceManager::loadTexture("textures/red.png", m_slotTypeHolder[SlotType::Red].c_str());
     ResourceManager::loadTexture("textures/grey.png", m_slotTypeHolder[SlotType::Grey].c_str());
     ResourceManager::loadTexture("textures/pink.png", m_slotTypeHolder[SlotType::Pink].c_str());
+
+    ResourceManager::loadTexture("textures/0.png", "0");
+    ResourceManager::loadTexture("textures/1.png", "1");
+    ResourceManager::loadTexture("textures/2.png", "2");
+    ResourceManager::loadTexture("textures/3.png", "3");
+    ResourceManager::loadTexture("textures/4.png", "4");
+    ResourceManager::loadTexture("textures/5.png", "5");
+    ResourceManager::loadTexture("textures/6.png", "6");
+    ResourceManager::loadTexture("textures/7.png", "7");
+    ResourceManager::loadTexture("textures/8.png", "8");
+    ResourceManager::loadTexture("textures/9.png", "9");
+    
     
     setBorders();
     setButtons();
     setSlots();
+    setScore();
 
     m_gameState = std::unique_ptr<State>(new IdleState(m_slots));
 
@@ -68,9 +81,15 @@ void Application::onEvent(Event& event)
     {
     case EventType::ButtonClicked:
     {
-	if (m_startButton->checkIfTarget())
+	if (m_startButton->checkIfTarget() && !m_startButton->isClicked() && m_gameState->getType() == StateType::Idle)
 	{
 	    m_gameState = std::make_unique<ActiveState>(m_slots);
+	    m_startButton->click();
+	}
+	else if (m_stopButton->checkIfTarget() && !m_stopButton->isClicked() && m_gameState->getType() == StateType::Active)
+	{
+	    dynamic_cast<ActiveState&>(*m_gameState).stop();
+	    m_stopButton->click();
 	}
 	break;
     }
@@ -99,16 +118,25 @@ void Application::run()
 	
         m_window->clear();
 
+	
 	if (!m_gameState->update(dt))
 	{
-	    m_gameState = std::make_unique<IdleState>(m_slots);
+	    m_gameState = std::make_unique<ScoreState>(m_slots, m_scoreNumber);
 	}
-	
+	else if (m_gameState->getType() == StateType::Score &&
+		 m_gameState->getStatus() == true)
+	{
+	    updateScore();
+	    m_gameState = std::make_unique<IdleState>(m_slots);
+	    m_startButton->loosen();
+	    m_stopButton->loosen();
+	}
 	render();
 
 	m_window->update();
     }
 }
+
 
 void Application::setBorders()
 {
@@ -140,13 +168,51 @@ void Application::setButtons()
     glm::vec2 buttonSize = glm::vec2(200.0f, 100.0f);
     glm::vec2 buttonCoords = glm::vec2(m_window->getWidth() - 300, buttonSize.y);
 
-    m_startButton = std::unique_ptr<Button>(new Button(buttonCoords, buttonSize, color, ResourceManager::getTexture("start")));
+    m_startButton = std::unique_ptr<Button>(new Button(buttonCoords, buttonSize, color,
+						       ResourceManager::getTexture("start")));
 
     color = glm::vec3(0.9f, 0.0f, 0.0f);
     buttonSize = glm::vec2(200.0f, 100.0f);
     buttonCoords = glm::vec2(m_window->getWidth() - 300, m_window->getHeight() - 2 * buttonSize.y);
     
-    m_stopButton = std::unique_ptr<Button>(new Button(buttonCoords, buttonSize, color, ResourceManager::getTexture("stop")));
+    m_stopButton = std::unique_ptr<Button>(new Button(buttonCoords, buttonSize, color,
+						      ResourceManager::getTexture("stop")));
+}
+
+void Application::setScore()
+{
+    glm::vec3 color = glm::vec3(1.0f, 1.0f, 1.0f);
+    glm::vec2 numberSize = glm::vec2(70.0f, 70.0f);
+    glm::vec2 numberCoords = glm::vec2(m_window->getWidth() - 375, m_window->getHeight() / 2 - numberSize.y/2);
+
+    for (unsigned int number = 0; number < m_score.size(); number++)
+    {
+	m_score[number] = Block(numberCoords, numberSize, color, ResourceManager::getTexture("2"));
+	numberCoords.x += numberSize.x;
+    }
+}
+
+void Application::updateScore()
+{
+    if (m_scoreNumber > 0)
+    {
+	glm::vec2 numberSize = glm::vec2(70.0f, 70.0f);      
+	
+	std::string scoreString = std::to_string(m_scoreNumber);
+	std::reverse(scoreString.begin(), scoreString.end());
+	
+	unsigned int stringInd = 0;
+	
+	std::cout << m_scoreNumber << std::endl;
+	std::cout << scoreString << std::endl;
+	for (unsigned int index = m_score.size() - 1; index > scoreString.length(); index--)
+	{
+	    
+	    m_score[index] = Block(m_score[index].getPosition(), numberSize, m_score[index].getColor(),
+				   ResourceManager::getTexture(std::string(1, scoreString[stringInd]).c_str()));
+	    stringInd++;
+	}
+    }
 }
 
 void Application::setSlots()
@@ -178,7 +244,6 @@ void Application::setSlots()
     }
 }
 
-
 void Application::render()
 {
     for (auto& drum : m_slots)
@@ -192,6 +257,11 @@ void Application::render()
     for (auto& border : m_borders)
     {
 	border.draw(*m_renderer, ResourceManager::getShader("general"));
+    }
+
+    for (auto& number : m_score)
+    {
+	number.draw(*m_renderer, ResourceManager::getShader("general"));
     }
 	
     m_startButton->draw(*m_renderer, ResourceManager::getShader("general"));

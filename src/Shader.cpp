@@ -7,7 +7,6 @@
 #include <string>
 
 #include "Shader.h"
-#include "ErrorHandler.h"
 
 using namespace gameModule;
 

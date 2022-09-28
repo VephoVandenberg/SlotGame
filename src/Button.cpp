@@ -31,3 +31,13 @@ void Button::changeColorIfTarget()
     // r g b
     changeColor(glm::vec3(m_color.x, m_color.y, blue));
 }
+
+void Button::click()
+{
+    m_isClicked = true;
+}
+
+void Button::loosen()
+{
+    m_isClicked = false;
+}

@@ -20,8 +20,10 @@ namespace gameModule
 
 	virtual void draw(Renderer& renderer, Shader& shader);
 	void changeColor(glm::vec3 color);
+	void changePosition(glm::vec2 pos);
 
-	inline glm::vec3 getColor() const { return m_color; } 
+	inline glm::vec3 getColor() const { return m_color; }
+	inline glm::vec2 getPosition() const { return m_position; }
 	
     protected:
 	Texture m_texture;
